@@ -3,7 +3,7 @@ import CreditCardInfo from "./CreditCardInfo";
 import OrderComplete from "./OrderComplete";
 import { useRef } from "react";
 
-function Payment({ ticket, addToTicket, emptyField, payComplet }) {
+function Payment({ ticket, addToTicket, emptyField, payComplet, hideEmptyField }) {
   const sectionEl = useRef(null);
   function finishedAdding() {
     event.preventDefault();
@@ -18,9 +18,9 @@ function Payment({ ticket, addToTicket, emptyField, payComplet }) {
 
     formsElements.forEach((e) => {
       const form = {
-        number: Number(e.querySelector(".card-number").value),
-        day: Number(e.querySelector(".expire-day").value),
+        number: Number(e.querySelector(".card-number").value.replaceAll(" ", "")),
         month: Number(e.querySelector(".expire-month").value),
+        year: Number(e.querySelector(".expire-year").value),
         cvc: Number(e.querySelector(".cvc-number").value),
         cardholder: e.querySelector(".card-holder").value,
       };
@@ -41,7 +41,12 @@ function Payment({ ticket, addToTicket, emptyField, payComplet }) {
       ) : (
         <section ref={sectionEl}>
           <Basket ticket={ticket} />
-          <CreditCardInfo finishedAdding={finishedAdding} emptyField={emptyField} ticket={ticket} />
+          <CreditCardInfo
+            finishedAdding={finishedAdding}
+            emptyField={emptyField}
+            ticket={ticket}
+            handleChange={hideEmptyField}
+          />
         </section>
       )}
     </>

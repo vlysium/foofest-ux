@@ -1,4 +1,4 @@
-import { useState, useEffect, } from "react";
+import { useState, useEffect } from "react";
 import { Button, message, Steps } from "antd";
 import TicketType from "../components/forms/TicketType";
 import "../styles/Tickets.scss";
@@ -17,7 +17,7 @@ function Tickets() {
     r: 0,
     v: 0,
     info: [],
-    campingArea: "",
+    campingArea: "none",
     greenCamping: 0,
     tentAmount: 0,
   });
@@ -36,7 +36,7 @@ function Tickets() {
   // Check if timer needs to start
   const [Timer, setTimer] = useState(false);
   //refresh page
-   const [counterTime, setCounterTime] = useState(null);
+  const [counterTime, setCounterTime] = useState(null);
   // Timer length
   //const [oneHour, setOneHour] = useState();
   /* 
@@ -55,7 +55,7 @@ function Tickets() {
       //console.log(data);
     }
     getSpots();
-  }, [ticket]);
+  }, [current]);
 
   // hvor mange billetter er valgt
   function addToTicket(property, value) {
@@ -80,7 +80,6 @@ function Tickets() {
     setCounterTime(Date.now() + 300000);
     setTimer(true);
     //console.log(response);
-   
   }
   // FULL RESERVATION
   async function fullReservation() {
@@ -102,20 +101,29 @@ function Tickets() {
     setSupaData(response);
     //console.log(response);
   }
- 
 
-
-
+  function hideEmptyField() {
+    setEmptyField(false);
+  }
 
   // Progress tracker from Ant Design
   const steps = [
     {
       title: "",
-      content: <TicketType addToTicket={addToTicket} emptyField={emptyField} />,
+      content: (
+        <TicketType ticket={ticket} addToTicket={addToTicket} emptyField={emptyField} handleChange={hideEmptyField} />
+      ),
     },
     {
       title: "",
-      content: <TicketInfoList ticket={ticket} addToTicket={addToTicket} emptyField={emptyField} />,
+      content: (
+        <TicketInfoList
+          ticket={ticket}
+          addToTicket={addToTicket}
+          emptyField={emptyField}
+          handleChange={hideEmptyField}
+        />
+      ),
     },
     {
       title: "",
@@ -127,16 +135,28 @@ function Tickets() {
     },
     {
       title: "",
-      content: <Payment payComplet={payComplet} ticket={ticket} addToTicket={addToTicket} emptyField={emptyField} />,
+      content: (
+        <Payment
+          payComplet={payComplet}
+          ticket={ticket}
+          addToTicket={addToTicket}
+          emptyField={emptyField}
+          hideEmptyField={hideEmptyField}
+        />
+      ),
     },
   ];
 
   //const [current, setCurrent] = useState(0);
   const next = () => {
-    setCurrent(current + 1);
+    window.scrollTo({ top: 80, behavior: "smooth" });
+    if (current < 4) {
+      setCurrent((old) => old + 1);
+    }
   };
   const prev = () => {
-    setCurrent(current - 1);
+    window.scrollTo({ top: 80, behavior: "smooth" });
+    setCurrent((old) => old - 1);
   };
   const items = steps.map((item) => ({
     key: item.title,
@@ -145,36 +165,42 @@ function Tickets() {
   //skip the optionals tab if no camping is selected
   const skipOptions = () => {
     setCurrent(current + 2);
-  
   };
 
-  const renderer = ({minutes, seconds}) => {
+  const renderer = ({ minutes, seconds }) => {
     return (
       <span className="ticket-timer">
         {zeroPad(minutes)}:{zeroPad(seconds)}
       </span>
     );
-  }
+  };
   return (
     <section id="ticket-section">
       <form action="" id="tickets">
-        <Steps className={payComplet ? "hidden" : null} current={current} items={items} />
+        <Steps className={payComplet ? "steps-hidden" : null} current={current} items={items} />
         <div className="steps-content">
-          {Timer ? (
-            <CD 
-            onComplete={()=> {  if (Timer === true) {
-              window.location.reload(false);
-            }} }
-            date = {counterTime}
-            renderer={renderer}
-        
-            />
-          ) : (
-            ""
-          )}
+          <div className="timer-container">
+            {Timer ? (
+              <CD
+                onComplete={() => {
+                  if (Timer === true) {
+                    //window.location.reload(false); //!!!
+                  }
+                }}
+                date={counterTime}
+                renderer={renderer}
+              />
+            ) : (
+              ""
+            )}
+          </div>
           {steps[current].content}
         </div>
-        <div className={!payComplet ? (current > 0 ? "steps-action two-button" : "steps-action one-button") : "hidden"}>
+        <div
+          className={
+            !payComplet ? (current > 0 ? "steps-action two-button" : "steps-action one-button") : "steps-hidden"
+          }
+        >
           {current > 0 && (
             <Button className="btn" onClick={() => prev()}>
               PREVIOUS
@@ -207,15 +233,16 @@ function Tickets() {
                 if (ticket.campingArea === undefined) {
                   setEmptyField(true);
                 } else {
+                  /*
                   if (ticket.campingArea === "none") {
                     setEmptyField(false);
                     //reserveSpot();
                     skipOptions();
-                  } else {
-                    setEmptyField(false);
-                    reserveSpot();
-                    next();
-                  }
+                  } else {*/
+                  setEmptyField(false);
+                  reserveSpot();
+                  next();
+                  //}
                 }
               }}
             >
@@ -260,7 +287,7 @@ function Tickets() {
               NEXT
             </Button>
           )}
-          {current === steps.length - 1 && (
+          {current === 4 && (
             //payment
             <Button
               className="btn"
@@ -273,10 +300,10 @@ function Tickets() {
                   } else if (ticket.payment[0].number.toString().length < 16) {
                     setEmptyField(true);
                     //console.log("please fill out the creditnumber");
-                  } else if (ticket.payment[0].day.toString().length < 2) {
+                  } else if (ticket.payment[0].month.toString().length < 2) {
                     setEmptyField(true);
                     //console.log("month");
-                  } else if (ticket.payment[0].month.toString().length < 2) {
+                  } else if (ticket.payment[0].year.toString().length < 2) {
                     setEmptyField(true);
                     //console.log("year");
                   } else if (ticket.payment[0].cvc.toString().length < 3) {
@@ -285,10 +312,11 @@ function Tickets() {
                   } else {
                     setEmptyField(false);
                     setPayComplet(true);
-                    fullReservation();
-                    postToSupabase();
+                    /*fullReservation();
+                    postToSupabase();*/
                     setTimer(false);
                     message.success("Processing complete!");
+                    next();
                   }
                 } /* message.success("Processing complete!") */
               }

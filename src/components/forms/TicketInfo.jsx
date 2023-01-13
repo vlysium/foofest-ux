@@ -1,11 +1,12 @@
 import { useState } from "react";
 import { DatePicker } from "antd";
+import { useSubmit } from "react-router-dom";
 // https://bobbyhadz.com/blog/react-check-if-email-is-valid
 
-function TicketInfo({ type, finishedAdding }) {
-  const [message, setMessage] = useState("");
-  const [error, setError] = useState(null);
-  const [txt, setTxt] = useState("");
+function TicketInfo({ type, finishedAdding, fullName, eMail, inputHandleChange }) {
+  const [error, setError] = useState(false);
+  const [fullname, setFullname] = useState(fullName !== "" ? fullName : "");
+  const [email, setEmail] = useState(eMail !== "" ? eMail : "");
 
   // validate the email
   function isValidEmail(email) {
@@ -14,15 +15,16 @@ function TicketInfo({ type, finishedAdding }) {
 
   const handleChange = (event) => {
     //console.log(!isValidEmail(event.target.value));
-    setMessage(event.target.value);
+    setEmail(event.target.value);
+    inputHandleChange();
     finishedAdding();
   };
 
   function handleBlur(event) {
     if (!isValidEmail(event.target.value)) {
-      setError("Email is invalid");
+      setError(true);
     } else {
-      setError(null);
+      setError(false);
     }
   }
 
@@ -33,7 +35,7 @@ function TicketInfo({ type, finishedAdding }) {
 
     const re = /^[a-zæøåäöü\s]+$/gi;
     if (value === "" || re.test(value)) {
-      setTxt(value);
+      setFullname(value);
     }
     finishedAdding();
   };
@@ -53,7 +55,7 @@ function TicketInfo({ type, finishedAdding }) {
             className="fullname"
             autoComplete="name"
             onChange={onInputChange}
-            value={txt}
+            value={fullname}
           />
         </label>
 
@@ -62,13 +64,13 @@ function TicketInfo({ type, finishedAdding }) {
           <input
             type="email"
             name="email"
-            className="email"
+            className={error ? "email invalid" : "email"}
             autoComplete="email"
             onChange={handleChange}
-            value={message}
+            value={email}
             onBlur={handleBlur}
           />
-          <span>{error}</span>
+          <span className={error ? "field-required" : "field-required hidden"}>Your email is invalid</span>
         </label>
 
         <label className="label-birthday">
@@ -82,7 +84,6 @@ function TicketInfo({ type, finishedAdding }) {
           />
         </label>
       </fieldset>
-  
     </details>
   );
 }

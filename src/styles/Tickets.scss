@@ -5,9 +5,6 @@
   width: 100%;
   //padding: 2rem;
 
-  h3 {
-    margin-bottom: 1.5rem;
-  }
   .completed {
     margin: 0;
     font-size: 2.5rem;
@@ -15,21 +12,20 @@
   .p-completed {
     margin-bottom: 1.5rem;
   }
-  .ticket-timer{
-   
-     -webkit-text-stroke-width: 1px;
+  .ticket-timer {
+    -webkit-text-stroke-width: 1px;
     -webkit-text-stroke-color: white;
     color: transparent;
     font-size: 2.5rem;
     display: flex;
     justify-content: start;
     font-weight: 900;
-    margin-bottom: 1rem;
-    //margin-block: 30px;
+    width: max-content;
+    margin: auto;
   }
   .order-complete {
     text-align: center;
-    margin-bottom: 60px;
+    margin-block: auto;
     padding-top: 80px;
     position: relative;
 
@@ -41,24 +37,66 @@
       height: 16px;
       top: 0;
       left: 50%;
+      transform-origin: center left;
+      animation-delay: 1s;
+      animation-iteration-count: 1;
+      animation-fill-mode: both;
+      animation-duration: 0.6s;
     }
 
     &::before {
       width: 32px;
       transform: rotate(45deg) translate(0px, 33px);
+      animation-name: ani-before;
+      animation-timing-function: ease-in;
     }
 
     &::after {
       width: 64px;
-      transform: rotate(-45deg) translate(-20px, 0px);
+      transform: rotate(-45deg) translate(-40px, 25px);
+      animation-name: ani-after;
+      animation-timing-function: ease-out;
+    }
+
+    @keyframes ani-before {
+      0% {
+        width: 0px;
+      }
+      50% {
+        width: 32px;
+      }
+      100% {
+        width: 32px;
+      }
+    }
+
+    @keyframes ani-after {
+      0% {
+        width: 0px;
+      }
+      50% {
+        width: 0px;
+      }
+      100% {
+        width: 64px;
+      }
     }
   }
   .field-required {
     color: red;
     font-size: 0.9rem;
+    visibility: visible;
+
+    &.hidden {
+      visibility: hidden;
+    }
   }
 
-/*   .timer {
+  .fieldset-container {
+    margin-top: 20px;
+  }
+
+  /*   .timer {
     -webkit-text-stroke-width: 1px;
     -webkit-text-stroke-color: white;
     color: transparent;
@@ -72,7 +110,7 @@
     display: grid;
     justify-content: center;
     padding: 1rem;
-    min-height: 80vh;
+    min-height: 100vh;
     max-width: 480px;
     margin-inline: auto;
     label {
@@ -85,6 +123,14 @@
       }
     }
 
+    .optionals-wrapper {
+      margin-top: 20px;
+
+      > p {
+        margin-top: 12px;
+      }
+    }
+
     fieldset,
     .optionals-wrapper {
       border: none;
@@ -94,6 +140,10 @@
         border-radius: 5px;
         background-color: v.$color-black-light;
       }
+    }
+
+    fieldset.invalid {
+      border: 1px solid red;
     }
 
     input {
@@ -114,17 +164,27 @@
       }
 
       &:focus-visible {
-        outline: 0;
-        border: 2px solid v.$color-purple-light;
+        outline: 0 !important;
+        border: 2px solid v.$color-purple-light !important;
+      }
+
+      &.invalid {
+        border: 1px solid red;
       }
     }
 
-    .hidden {
+    .steps-hidden {
       display: none;
     }
 
     .steps-content {
       margin-bottom: auto;
+      margin-top: 20px;
+
+      .timer-container {
+        min-height: 72px;
+        margin-bottom: 20px;
+      }
     }
 
     .button-container {
@@ -182,10 +242,14 @@
 
         label {
           margin-top: 0.5rem;
+
+          &.label-birthday {
+            margin-top: calc(32px - 1rem);
+          }
         }
 
         label + label {
-          margin-top: 1rem;
+          margin-top: 32px;
         }
       }
 
@@ -227,6 +291,10 @@
         label,
         input {
           cursor: pointer;
+
+          &[disabled] {
+            cursor: not-allowed;
+          }
         }
       }
     }
@@ -365,12 +433,17 @@
           left: -1px;
           border: 2px solid v.$color-purple-light;
           border-radius: 5px;
+          pointer-events: none;
         }
 
-        #expire-day,
-        #expire-month {
+        #expire-month,
+        #expire-year {
           display: block;
-          border: 0;
+          border: 0 !important;
+        }
+
+        &.invalid {
+          border: 1px solid red;
         }
       }
       button {
@@ -506,6 +579,10 @@
   .steps-action {
     display: flex;
     margin-top: 40px;
+
+    > button {
+      width: 128px;
+    }
   }
   .one-button {
     justify-content: end;
@@ -549,10 +626,6 @@
 
     } */
       }
-    }
-
-    .steps-content {
-      margin-top: calc(40px + 3vh);
     }
 
     .concert-img-wrapper {

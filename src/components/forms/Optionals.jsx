@@ -1,7 +1,27 @@
 function Optionals({ ticket, addToTicket }) {
+  function handleChange(type, evt) {
+    switch (type) {
+      case "green":
+        if (evt.target.checked) {
+          addToTicket("greenCamping", Number(evt.target.value));
+        } else {
+          addToTicket("greenCamping", Number(0));
+        }
+        break;
+
+      case "multi":
+        if (evt.target.checked) {
+          addToTicket("tentAmount", Number(evt.target.value));
+        } else {
+          addToTicket("tentAmount", Number(0));
+        }
+        break;
+    }
+  }
   return (
     <>
       <h3>CAMPING OPTIONALS</h3>
+      {ticket.campingArea === "none" && <p>Note: only available with camping.</p>}
       <div className="optionals-wrapper">
         <fieldset className="optionals">
           <label htmlFor="green-camping" className="eco-camping">
@@ -13,7 +33,8 @@ function Optionals({ ticket, addToTicket }) {
             type="checkbox"
             name="green-camping"
             id="green-camping"
-            onChange={(evt) => addToTicket("greenCamping", Number(evt.target.value))}
+            onChange={(evt) => handleChange("green", evt)}
+            checked={ticket.greenCamping !== 0}
           />
           <span className="checkmark"></span>
         </fieldset>
@@ -24,22 +45,14 @@ function Optionals({ ticket, addToTicket }) {
           </label>
           <input
             value={(ticket.r + ticket.v) * 100 + 99}
-            disabled={ticket.r + ticket.v < 2}
+            disabled={ticket.campingArea === "none"}
             type="checkbox"
             name="two-person"
             id="two-person"
-            onChange={(evt) => addToTicket("tentAmount", Number(evt.target.value))}
+            onChange={(evt) => handleChange("multi", evt)}
+            checked={ticket.tentAmount !== 0}
           />
-          <span className="checkmark"></span>
-          {/* <label htmlFor="three-person" className="three-camp">
-          <span>3 person camp</span> <span> 399,-</span>
-        </label>
-        <input type="checkbox" name="three-person" id="green-campingthree-person" /> */}
         </fieldset>
-        {/*  <div className="button-container">
-        <button>BACK</button>
-        <button>NEXT</button>
-      </div> */}
       </div>
     </>
   );

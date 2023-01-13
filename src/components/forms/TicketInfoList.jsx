@@ -1,7 +1,7 @@
 import { useRef } from "react";
 import TicketInfo from "./TicketInfo";
 
-function TicketInfoList({ ticket, addToTicket, emptyField }) {
+function TicketInfoList({ ticket, addToTicket, emptyField, handleChange }) {
   const sectionEl = useRef(null);
 
   function finishedAdding() {
@@ -30,23 +30,31 @@ function TicketInfoList({ ticket, addToTicket, emptyField }) {
   return (
     <section ref={sectionEl}>
       <h3>TICKET INFO</h3>
-      {emptyField ? <p style={{color:"red"}}>Please fill in all of the fields</p> : ""}
-      {[...Array(ticket.r).keys()].map((info, index) => (
-        <TicketInfo
-          ticket={ticket}
-          type={"REGULAR"}
-          key={index}
-          finishedAdding={finishedAdding}
-        />
-      ))}
-      {[...Array(ticket.v).keys()].map((info, index) => (
-        <TicketInfo
-          ticket={ticket}
-          type={"VIP"}
-          key={index}
-          finishedAdding={finishedAdding}
-        />
-      ))}
+      <div className="fieldset-container">
+        <p className={emptyField ? "field-required" : "field-required hidden"}>Please fill in all the fields!</p>
+        {[...Array(ticket.r).keys()].map((info, index) => (
+          <TicketInfo
+            ticket={ticket}
+            type={"REGULAR"}
+            key={index}
+            finishedAdding={finishedAdding}
+            fullName={ticket.info[index] ? ticket.info[index].fullname : null}
+            eMail={ticket.info[index] ? ticket.info[index].email : null}
+            inputHandleChange={handleChange}
+          />
+        ))}
+        {[...Array(ticket.v).keys()].map((info, index) => (
+          <TicketInfo
+            ticket={ticket}
+            type={"VIP"}
+            key={index}
+            finishedAdding={finishedAdding}
+            fullName={ticket.info[index + ticket.r] ? ticket.info[index + ticket.r].fullname : null}
+            eMail={ticket.info[index + ticket.r] ? ticket.info[index + ticket.r].email : null}
+            inputHandleChange={handleChange}
+          />
+        ))}
+      </div>
     </section>
   );
 }

@@ -1,9 +1,9 @@
-export default function CampingArea({ spots, addToTicket, ticket, emptyField }) {
+export default function CampingArea({ spots, addToTicket, ticket }) {
   //console.log(spots);
   return (
     <>
       <h3>CAMPING AREA</h3>
-      {emptyField ? <p style={{ color: "red" }}>Please pick one of the option below</p> : ""}
+      <p>Pick one of the camping areas of your choice for the price of 99,- DKK:</p>
       <fieldset id="camping-area" className="scene-names">
         <div className="campContainer">
           <label htmlFor="no-camping">No camping</label>
@@ -12,10 +12,9 @@ export default function CampingArea({ spots, addToTicket, ticket, emptyField }) 
             type="radio"
             name="area"
             id="no-camping"
-            pattern="[0-9]"
             inputMode="numeric"
             value="none"
-            defaultChecked
+            checked={ticket.campingArea === "none"}
           />
         </div>
 
@@ -31,9 +30,9 @@ export default function CampingArea({ spots, addToTicket, ticket, emptyField }) 
               type="radio"
               name="area"
               id={area.area}
-              pattern="[0-9]"
               inputMode="numeric"
               value={area.area}
+              checked={ticket.campingArea === area.area}
             />
           </div>
         ))}
