@@ -38,7 +38,9 @@ function Optionals({ ticket, addToTicket }) {
           />
           <span className="checkmark"></span>
         </fieldset>
-        <p>Get the crew to set up your tents</p>
+        <p>
+          Have the crew to set up {ticket.r + ticket.v} tent{ticket.r + ticket.v === 1 ? "" : "s"} for you
+        </p>
         <fieldset className="optionals">
           <label htmlFor="two-person" className="two-camp">
             <span>{ticket.r + ticket.v} person camp</span> <span>{(ticket.r + ticket.v) * 100 + 99},-</span>

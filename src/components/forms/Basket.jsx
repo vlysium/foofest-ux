@@ -13,7 +13,7 @@ function Basket({ ticket }) {
   if (ticket.v > 0) {
     total += ticket.v * 1299;
   }
-  if (ticket.campingArea != "") {
+  if (ticket.campingArea != "none") {
     total += 99;
   }
   if (ticket.greenCamping != undefined) {
@@ -44,7 +44,7 @@ function Basket({ ticket }) {
     } else {
       setGreen(true);
     }
-    if (ticket.campingArea === "" || ticket.campingArea === undefined) {
+    if (ticket.campingArea === "none" || ticket.campingArea === undefined) {
       setCampingPrice(false);
     } else {
       setCampingPrice(true);
