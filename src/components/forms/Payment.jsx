@@ -18,10 +18,10 @@ function Payment({ ticket, addToTicket, emptyField, payComplet, hideEmptyField }
 
     formsElements.forEach((e) => {
       const form = {
-        number: Number(e.querySelector(".card-number").value.replaceAll(" ", "")),
-        month: Number(e.querySelector(".expire-month").value),
-        year: Number(e.querySelector(".expire-year").value),
-        cvc: Number(e.querySelector(".cvc-number").value),
+        number: e.querySelector(".card-number").value.replaceAll(" ", ""),
+        month: e.querySelector(".expire-month").value,
+        year: e.querySelector(".expire-year").value,
+        cvc: e.querySelector(".cvc-number").value,
         cardholder: e.querySelector(".card-holder").value,
       };
       creditCard.push(form);
